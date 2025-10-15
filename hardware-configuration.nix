@@ -5,7 +5,7 @@
     ./bootloader.nix
   ];
   boot = {
-#    kernelPackages = pkgs.linuxPackages_rpi4;
+    kernelPackages = pkgs.linuxPackages_rpi4;
     loader = {
       grub.enable = false;
     };

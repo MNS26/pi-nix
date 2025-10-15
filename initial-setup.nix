@@ -41,7 +41,6 @@ in {
       '';
       config_txt = pkgs.writeText "config.txt" ''
         initramfs initrd followkernel
-        gpu_mem=16
       '';
     in ''
       cp -v ${fw}/{bootcode.bin,fixup.dat,start.elf,fixup4.dat,start4.elf,fixup4cd.dat,fixup_cd.dat,start4cd.elf,start_cd.elf,bcm2710*dtb,bcm2711*dtb,bcm2712*dtb} firmware/

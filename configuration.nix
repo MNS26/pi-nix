@@ -1,27 +1,91 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ];
+  imports = [ 
+    ./hardware-configuration.nix
+#    ./visual-code-server.nix
+#    ./lxqt.nix
+    ];
+  
+  nix.settings = {
+    experimental-features = [
+      "nix-command"
+      "flakes"
+    ];
+    substituters = [
+      "https://cache.nixos.org/"
+    ];
+    trusted-users = [
+      "root"
+      "@wheel"
+    ];
+    trusted-public-keys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+    ];
+  };
 
   environment.systemPackages = with pkgs; [
     wayland
+    wayland-utils
     xwayland
     wlr-randr
     xdg-desktop-portal-wlr
     
+    #lxqt
+    lxqt.lxqt-wayland-session 
+    xterm
+
     #lxde
     lxrandr
     lxsession
     lxpanel
     lxtask
     lxterminal
-    
 
-    # plasma
-#    rPackages.plasma
+    #themes
+#    lxqt.lxqt-themes
+    adwaita-icon-theme
+    gnome-icon-theme
+
     
     #wayfire
-    wayfire
+    wayfire-with-plugins
+#    wayfirePlugins.wcm
+    wayfirePlugins.wf-shell
+#    wayfirePlugins.wwp-switcher
+#    wayfirePlugins.focus-request
+    wayfirePlugins.wayfire-shadows
+#    wayfirePlugins.wayfire-plugins-extra
+
+    # Desktop programs
+    firefox
+
+    #audio
+    wireplumber
+
+    #fonts
+    dejavu_fonts
+
+    #cli packages
+    nano
+    fastfetch
+    btop
+    curl
+    evtest
+    i2c-tools
+    kmod
+
+
+    #other 
+    bluez
+    console-setup
+    cpio
+    colord
+#    gpio-utils
+    git
+    squeekboard
+    # debian pi packages
+    #TODO: find equivalent
 #    wf-panel-pi
 #    wfplug-batt
 #    wfplug-bluetooth
@@ -38,15 +102,28 @@
 
   environment.sessionVariables = {
     XDG_SESSION_TYPE = "wayland";
-    QT_QPA_PLATFORM = "wayland,xcb";
-    GDK_BACKEND = "wayland,x11";
+    QT_QPA_PLATFORM = "wayland";
+    GDK_BACKEND = "wayland";
     NIXOS_OZONE_WL = "1";
+    WLR_RENDERER_ALLOW_SOFTWARE = "1";
   };
 
   boot = {
     initrd = {
-#      availableKernelModules = [ "vc4" "v3d" ];
+      availableKernelModules = [ "vc4" "v3d" ];
     };
+    kernelParams = [
+    "video=DSI-0:800x480@60,rotated=180"
+    "console=console0,115200"
+    "console=tty1,115200"
+    "vt.global_cusor_default=0"
+    "splat"
+    "fsck.repair=yes"
+    "rootwait"
+    "plymouth.ignore-serial-consoles"
+    "cfg80211.ieee80211_regdom=NL"
+    "elevator=deadline"
+    ];
   };
   documentation.enable = false;
 
@@ -65,25 +142,56 @@
     };
   };
 
-  services = {
-    openssh.enable = true;
-
-    xserver.displayManager.lightdm.enable = false;
-    displayManager.sddm = {
-      enable = true;
-      wayland.enable = true;
-    };
+  security = {
+    rtkit.enable = true;
+    sudo.enable = true;
   };
-  
-  programs = {
+
+  programs = 
+  {
+    gnupg.agent.pinentryPackage = pkgs.pinentry-qt;
     wayfire.enable = true;
     xwayland.enable = true;
   };
 
-  hardware = {
-#    graphics.enable = true;
-    firmware = [ pkgs.raspberrypiWirelessFirmware ];
+  qt = {
+    enable = true;
+    platformTheme = "gnome";
+    style = "adwaita-dark";
   };
+
+
+
+  services = {
+    openssh.enable = true;
+    xserver = {
+      enable = true;
+    };
+
+    displayManager = {
+      sddm.enable = true;
+      sddm.wayland.enable = true;
+#      sessionPackages = with pkgs; [ lxqt.lxqt-wayland-session  ];
+#      sessionPackages = with pkgs; [ wayfire-with-plugins ];
+#      autoLogin = {
+#        enable = true;
+#        user = "noah";
+#      };
+    };
+    desktopManager.plasma6.enable = true;
+
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      pulse.enable = true;
+    };
+  };
+  
+  hardware = {
+    graphics.enable = true;
+    firmware = with pkgs; [ raspberrypiWirelessFirmware ];
+  };
+
   networking = {
     hostName = "pi-nix";
     hostId = "af1e86bc";
@@ -93,6 +201,10 @@
       enable = true;
       # adapters
       interfaces = ["wlp3s0"];
+      #dummy network
+      networks.Thuis = {
+        psk = "Welkom2016!";
+      };
     };
   };
   
