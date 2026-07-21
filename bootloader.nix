@@ -1,10 +1,7 @@
 { pkgs, lib, config, ... }:
 
 let
-  config_txt = pkgs.writeText "config.txt" ''
-    initramfs initrd followkernel
-    gpu_mem=16
-  '';
+  config_txt = builtins.readFile ./config.txt;
 in {
   options = {
     boot.loader.rpi = {

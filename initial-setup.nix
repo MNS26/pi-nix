@@ -34,14 +34,13 @@ in {
     firmwarePartitionName = "bootfs";
     rootVolumeLabel = "rootfs";
     firmwareSize = 64;
+    compressImage = false;
     populateFirmwareCommands = let
       fw = "${pkgs.raspberrypifw}/share/raspberrypi/boot";
-      cmdline = pkgs.writeText "cmdline.txt" ''
-        init=${builtins.unsafeDiscardStringContext config.system.build.toplevel}/init ${toString config.boot.kernelParams}
-      '';
-      config_txt = pkgs.writeText "config.txt" ''
-        initramfs initrd followkernel
-      '';
+      cmdline = pkgs.writeText "cmdline.txt" ''init=${builtins.unsafeDiscardStringContext config.system.build.toplevel}/init ${toString config.boot.kernelParams}'';
+      
+      config_txt = pkgs.writeText "config.txt" ''initramfs initrd followkernel'';
+      
     in ''
       cp -v ${fw}/{bootcode.bin,fixup.dat,start.elf,fixup4.dat,start4.elf,fixup4cd.dat,fixup_cd.dat,start4cd.elf,start_cd.elf,bcm2710*dtb,bcm2711*dtb,bcm2712*dtb} firmware/
       cat ${config.boot.kernelPackages.kernel}/${config.system.boot.loader.kernelFile} | gzip -9v > firmware/kernel8.img
