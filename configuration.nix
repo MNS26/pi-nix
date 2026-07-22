@@ -3,6 +3,7 @@
 {
   imports = [ 
     ./hardware-configuration.nix
+    ./edgetx.nix
 #    ./visual-code-server.nix
 #    ./wayfire.nix
     ];
@@ -25,7 +26,6 @@
   };
 
   environment.systemPackages = with pkgs; [
-    inputs.edgetx.packages.${pkgs.stdenv.hostPlatform.system}.edgetx-linux
 #    # Desktop programs
     firefox
 #
@@ -95,7 +95,7 @@
     root = {
       initialPassword = "pi";
     };
-    noah = {
+    edgetx = {
       isNormalUser = true;
       extraGroups = [ "wheel" "networkmanager" "bluetooth" ];
       initialPassword = "pi";
@@ -139,7 +139,7 @@
 #    hostId = "af1e86bc";
     firewall.enable = false;
 
-    networkmanager.enable = true;
+    networkmanager.enable = false;
     #wifi config (replaced by networkmanager)
     #wireless = {
     #  enable = true;
