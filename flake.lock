@@ -7,11 +7,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1784670421,
-        "narHash": "sha256-+R1OSIED5NpQQ2XGL8/kbhAxaKnq4hp5acqguNOpQfI=",
+        "lastModified": 1784758564,
+        "narHash": "sha256-0rfuZW2o+tYnC0hfrdcQgL9ZX3p9nF39ibgcKiTSmpU=",
         "owner": "MNS26",
         "repo": "EdgeTX-Nix",
-        "rev": "7a708d7cfafa306f9a3bb7762b485fdf3578c013",
+        "rev": "d2475e68d0c3f12c47176ab2abc2917941db3c56",
         "type": "github"
       },
       "original": {

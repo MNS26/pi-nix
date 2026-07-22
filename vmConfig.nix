@@ -35,6 +35,7 @@ in {
   };
   virtualisation = {
     cores = 4;
+    diskImage = null;
     memorySize = 1024*8;
     qemu.options = [
       (if pkgs.stdenv.hostPlatform.isAarch64 then "-device virtio-gpu-pci" else "-vga virtio") # not that this should be built on arm though . . . 

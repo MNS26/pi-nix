@@ -5,7 +5,7 @@
       url = "https://github.com/MNS26/EdgeTX/blob/linux/radio/src/targets/linux/assets/images/icon.png";
       hash = "sha256-kNvctAQL+zc3AhUswBfOkR9idaVPitXUJzBlf5GtMXk=";
     };
-    etx-path = "/home/edgetx/edgetx";
+    etx-path = "\\$HOME/.local/share/edge-tx/";
     etx-sd = pkgs.fetchzip {
       url = "https://github.com/EdgeTX/edgetx-sdcard/releases/download/v2.12.1/c800x480.zip";
       stripRoot=false;
@@ -13,11 +13,11 @@
     };
   in {
   environment.systemPackages = with pkgs; [
-    inputs.edgetx.packages.${pkgs.stdenv.hostPlatform.system}.edgetx-linux
+    (inputs.edgetx.packages.${pkgs.stdenv.hostPlatform.system}.edgetx-linux.override { sd-path = etx-path; sdcard = etx-sd; })
     (makeDesktopItem {
       name = "EdgeTX";
       exec = "/run/current-system/sw/bin/edgetx";
-      path = "${etx-path}";
+#      path = "${etx-path}";
       desktopName = "EdgeTX";
       genericName = "EdgeTX";
       noDisplay = false;
@@ -27,15 +27,15 @@
   
     })
   ];
-  system.activationScripts.sd-content = ''
-    if [[ ! -e "${etx-path}" ]]; then
-      mkdir -p ${etx-path}
-    fi
-    for folder in ${etx-sd}/*; do
-      cp -r "${etx-sd}/''${folder##*/}" ${etx-path}/
-      echo "copied ${etx-sd}/''${folder##*/} to ${etx-path}/''${folder##*/}"
-    done
-    chown -R nobody:users ${etx-path}
-    chmod -R 777 ${etx-path} 
-  '';
+  #system.activationScripts.sd-content = ''
+  #  if [[ ! -e "${etx-path}" ]]; then
+  #    mkdir -p ${etx-path}
+  #  fi
+  #  for folder in ${etx-sd}/*; do
+  #    cp -r "${etx-sd}/''${folder##*/}" ${etx-path}/
+  #    echo "copied ${etx-sd}/''${folder##*/} to ${etx-path}/''${folder##*/}"
+  #  done
+  #  chown -R nobody:users ${etx-path}
+  #  chmod -R 777 ${etx-path} 
+  #'';
 }
