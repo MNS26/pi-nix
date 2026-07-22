@@ -2,8 +2,9 @@
 
 {
   imports = [ 
-    ./hardware-configuration.nix
     ./edgetx.nix
+    ./hardware-configuration.nix
+    ./kde.nix
 #    ./visual-code-server.nix
 #    ./wayfire.nix
     ];
@@ -74,8 +75,8 @@
     networkmanagerapplet
 
     # Power management
-    swayidle
-    wlopm
+#    swayidle
+#    wlopm
   ];
   
   environment = {
@@ -106,9 +107,7 @@
     };
   };
 
-  services.desktopManager.plasma6.enable = true;
-  programs = 
-  {
+  programs = {
     zsh.enable = true;
 #    gnupg.agent.pinentryPackage = pkgs.pinentry-qt;
   };
@@ -123,9 +122,7 @@
       alsa.enable = true;
       pulse.enable = true;
     };
-        displayManager.sddm.enable = true;
-    displayManager.sddm.wayland.enable = true;
-   xserver.enable = true;
+    xserver.enable = true;
   };
 
   hardware = {
@@ -139,17 +136,17 @@
 #    hostId = "af1e86bc";
     firewall.enable = false;
 
-    networkmanager.enable = false;
+    networkmanager.enable = true;
     #wifi config (replaced by networkmanager)
-    #wireless = {
-    #  enable = true;
+    wireless = {
+      enable = true;
     #  # adapters
     #  interfaces = ["wlp3s0"];
     #  #dummy network
     #  networks.Thuis = {
     #    psk = "Welkom2016!";
     #  };
-    #};
+    };
   };
   time.timeZone = "Europe/Amsterdam";
 
