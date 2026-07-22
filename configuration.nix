@@ -2,9 +2,9 @@
 
 {
   imports = [ 
-    ./edgetx.nix
     ./hardware-configuration.nix
     ./kde.nix
+    ./edgetx.nix
 #    ./visual-code-server.nix
 #    ./wayfire.nix
     ];
@@ -107,7 +107,8 @@
     };
   };
 
-  programs = {
+  programs = 
+  {
     zsh.enable = true;
 #    gnupg.agent.pinentryPackage = pkgs.pinentry-qt;
   };
@@ -122,7 +123,6 @@
       alsa.enable = true;
       pulse.enable = true;
     };
-    xserver.enable = true;
   };
 
   hardware = {
@@ -136,17 +136,17 @@
 #    hostId = "af1e86bc";
     firewall.enable = false;
 
-    networkmanager.enable = true;
+    networkmanager.enable = false;
     #wifi config (replaced by networkmanager)
-    wireless = {
-      enable = true;
+    #wireless = {
+    #  enable = true;
     #  # adapters
     #  interfaces = ["wlp3s0"];
     #  #dummy network
     #  networks.Thuis = {
     #    psk = "Welkom2016!";
     #  };
-    };
+    #};
   };
   time.timeZone = "Europe/Amsterdam";
 

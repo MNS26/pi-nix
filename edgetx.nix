@@ -24,7 +24,7 @@
       comment = "Open source RC radio firmware";
       icon = "${etx-icon}";
       keywords = [ "edge" "Edge" "edgetx" "EdgeTX" "tx" "TX" ];
-    
+  
     })
   ];
   system.activationScripts.sd-content = ''
