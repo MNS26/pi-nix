@@ -12,3 +12,8 @@ cp -vL $1/initrd /boot/firmware/initrd
 
 echo "init=$1/init $(cat $1/kernel-params)" > /boot/firmware/cmdline.txt
 cp -v @config_txt@ /boot/firmware/config.txt
+
+mkdir -pv /boot/firmware/overlays
+if [ -n "$(ls -A @overlays@ 2>/dev/null)" ]; then
+  cp -v @overlays@/*.dtbo /boot/firmware/overlays/
+fi

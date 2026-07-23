@@ -3,6 +3,7 @@
 {
   imports = [ 
     ./hardware-configuration.nix
+    ./udev-rules.nix
     ./kde.nix
     ./edgetx.nix
 #    ./visual-code-server.nix

@@ -1,0 +1,36 @@
+/dts-v1/;
+/plugin/;
+
+/{
+  compatible = "brcm,bcm2712";
+
+  /* CM5 overlay: 1x I2C-1
+  *
+  * I2C1:  SDA=GPIO02, SCL=GPIO03                        (HAT pins 3/5)
+  */
+
+  fragment@0 {
+    target = <&rp1_gpio>;
+    __overlay__ {
+      ovl_i2c1_pins: ovl_i2c1_pins {
+        pin_sda {
+          function = "i2c1";
+          pins = "gpio2";
+          bias-pull-up;
+        };
+        pin_scl {
+          function = "i2c1";
+          pins = "gpio3";
+          bias-pull-up;
+        };
+      };
+    };
+  };
+  fragment@1 {
+    target = <&i2c1>;
+    __overlay__ {
+      status = "okay";
+      pinctrl-0 = <&ovl_i2c1_pins>;
+    };
+  };
+};

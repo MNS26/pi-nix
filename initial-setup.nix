@@ -1,6 +1,11 @@
 { pkgs, config, modulesPath, ... }:
 
 let
+  lib = pkgs.lib;
+  dtOverlays = import ./dt-overlay.nix {
+    inherit pkgs lib;
+    kernel = config.boot.kernelPackages.kernel;
+  };
   # upstream nixos/lib/make-ext4-fs.nix doesnt leave enough inodes
   # resulting in an image that fails the first boot
   # this creates enough inodes to fill the 8k table, and create a new 8k table
@@ -47,6 +52,10 @@ in {
       cp -v ${config.system.build.initialRamdisk}/${config.system.boot.loader.initrdFile} firmware/initrd
       cp -v ${cmdline} firmware/cmdline.txt
       cp -v ${config_txt} firmware/config.txt
+      mkdir -p firmware/overlays
+      if [ -n "$(ls -A ${dtOverlays.overlayDirDrv} 2>/dev/null)" ]; then
+        cp -v ${dtOverlays.overlayDirDrv}/*.dtbo firmware/overlays/
+      fi
     '';
     populateRootCommands = ''
     '';
