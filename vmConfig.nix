@@ -1,11 +1,10 @@
-{ lib, inputs, modulesPath, pkgs, ... }: 
+{ lib, inputs, modulesPath, pkgs, ... }:
 let
-  edid = pkgs.callPackage ./edid {};
-  edid-bin = pkgs.runCommand "edid-bin" {buildInputs = [ edid ]; compressFirmware = false;} ''
-    mkdir -pv $out/lib/firmware/edid
-    cd $out/lib/firmware/edid
-    edid-generate 800 480 60
-  '';
+  edid-bin = pkgs.generateEdid {
+    width = 800;
+    height = 480;
+    refresh = 60;
+  };
 in {
   imports = [
     (modulesPath + "/virtualisation/qemu-vm.nix")
@@ -13,22 +12,25 @@ in {
     ./initial-setup.nix
   ];
 
-  hardware.firmware = [ edid-bin ];
-  boot.initrd = {
-    availableKernelModules = {
-      vc4 = lib.mkForce false;
-      v3c = lib.mkForce false;
+  boot = {
+    initrd = {
+      allowMissingModules = true;
+      availableKernelModules = {
+        vc4 = lib.mkForce false;
+        v3c = lib.mkForce false;
+      };
+      extraFirmwarePaths = [ "edid/test.bin" ];
     };
+    kernelPackages = lib.mkVMOverride pkgs.linuxPackages;
+    kernelParams = [
+      "video=Virtual-1=800x480@60"
+      #"drm.edid_firmware=Virtual-1:edid/test.bin"
+    ];
+    plymouth.enable = lib.mkVMOverride false;
   };
-  boot.plymouth.enable = lib.mkVMOverride false;
-  boot.initrd.extraFirmwarePaths = [ "edid/test.bin" ];
-  boot.initrd.allowMissingModules = true;
-  boot.kernelPackages = lib.mkVMOverride pkgs.linuxPackages;
-  boot.kernelParams = [ 
-    "video=Virtual-1=800x480@60"
-  #  "drm.edid_firmware=Virtual-1:edid/test.bin"
-  ];
   environment.sessionVariables = lib.mkVMOverride {WLR_RENDERER_ALLOW_SOFTWARE = "1";};
+  hardware.firmware = [ edid-bin ];
+  nixpkgs.overlays = [ (import ./overlay.nix) ];
   security.sudo = lib.mkVMOverride {
     enable = true;
     wheelNeedsPassword = false;
@@ -38,7 +40,7 @@ in {
     diskImage = null;
     memorySize = 1024*8;
     qemu.options = [
-      (if pkgs.stdenv.hostPlatform.isAarch64 then "-device virtio-gpu-pci" else "-vga virtio") # not that this should be built on arm though . . . 
+      (if pkgs.stdenv.hostPlatform.isAarch64 then "-device virtio-gpu-pci" else "-vga virtio") # not that this should be built on arm though . . .
       "-serial mon:stdio"
     ];
 #    qemu.ovmf = {
@@ -47,8 +49,8 @@ in {
 #    };
     useEFIBoot = true;
     resolution = {
-        x = 800;
-        y = 480;
-      };
+      x = 800;
+      y = 480;
+    };
   };
 }

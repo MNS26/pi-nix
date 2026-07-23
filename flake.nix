@@ -9,8 +9,8 @@
       specialArgs.inputs = inputs;
       system = "aarch64-linux";
     };
-    mkVM = system: (nixpkgs.lib.nixosSystem { 
-      modules = [ ./vmConfig.nix ]; 
+    mkVM = system: (nixpkgs.lib.nixosSystem {
+      modules = [ ./vmConfig.nix ];
       specialArgs.inputs = inputs;
       system = system;
     }).config.system.build.vm;
@@ -19,6 +19,7 @@
     packages = {
       x86_64-linux = {
         vm-x64 = mkVM "x86_64-linux";
+        vm-aarch64 = mkVM "aarch64-linux";
         edid = nixpkgs.legacyPackages.x86_64-linux.callPackage ./edid {};
       };
       aarch64-linux = {
