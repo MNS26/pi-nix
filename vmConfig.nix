@@ -39,15 +39,18 @@ in {
     cores = 4;
     diskImage = null;
     memorySize = 1024*8;
-    qemu.options = [
-      (if pkgs.stdenv.hostPlatform.isAarch64 then "-device virtio-gpu-pci" else "-vga virtio") # not that this should be built on arm though . . .
-      "-serial mon:stdio"
-    ];
-#    qemu.ovmf = {
-#      enable = true;
-#      packages = [ pkgs.OMVFFull.fd ];
-#    };
-    useEFIBoot = true;
+    qemu = {
+      options = [
+        "-serial mon:stdio"
+      ] ++ lib.optional (!pkgs.stdenv.hostPlatform.isAarch64) "-vga virtio" # not that this should be built on arm though . . .
+      ;
+      #ovmf = {
+        #enable = true;
+        #packages = [ pkgs.OMVFFull.fd ];
+      #};
+      package = (import pkgs.path { system = "x86_64-linux"; }).qemu;
+    };
+    useEFIBoot = ! pkgs.stdenv.hostPlatform.isAarch64;
     resolution = {
       x = 800;
       y = 480;
