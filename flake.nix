@@ -13,11 +13,13 @@
       modules = [
         ./configuration.nix
         ./initial-setup.nix
-        home-manager.nixosModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.edgetx = import ./home.nix;
+        home-manager.nixosModules.default {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = { inherit inputs; };
+            users.edgetx = import ./home.nix;
+          };
         }
       ];
       specialArgs.inputs = inputs;
@@ -26,11 +28,13 @@
     mkVM = system: (nixpkgs.lib.nixosSystem { 
       modules = [ 
         ./vmConfig.nix
-        home-manager.nixosModules.home-manager {
-          home-manager.useGlobalPkgs = true;
-          home-manager.useUserPackages = true;
-          home-manager.extraSpecialArgs = { inherit inputs; };
-          home-manager.users.edgetx = import ./home.nix;
+        home-manager.nixosModules.default {
+          home-manager = {
+            useGlobalPkgs = true;
+            useUserPackages = true;
+            extraSpecialArgs = { inherit inputs; };
+            users.edgetx = import ./home.nix;
+          };
         }
       ]; 
       specialArgs.inputs = inputs;
@@ -44,9 +48,15 @@
         vm-aarch64 = mkVM "aarch64-linux";
         edid = nixpkgs.legacyPackages.x86_64-linux.callPackage ./edid {};
       };
+#      arm7l-linux = {
+#        vm-arm7l = mkVM "armv7l-linux";
+#        nixos = eval.config.system.build.toplevel;
+#        sdImage = eval.config.system.build.sdImage;
+#        edid = nixpkgs.legacyPackages.arm7l-linux.callPackage ./edid {};
+ #       inherit eval;
+ #     };
       aarch64-linux = {
         vm-aarch64 = mkVM "aarch64-linux";
-        vm-arm7l = mkVM "armv7l-linux";
         nixos = eval.config.system.build.toplevel;
         sdImage = eval.config.system.build.sdImage;
         edid = nixpkgs.legacyPackages.aarch64-linux.callPackage ./edid {};
