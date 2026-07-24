@@ -9,7 +9,7 @@
   };
   outputs = { edgetx, home-manager, nixpkgs, self }@inputs:
   let
-    eval = nixpkgs.lib.nixosSystem {
+    eval = system: nixpkgs.lib.nixosSystem {
       modules = [
         ./configuration.nix
         ./initial-setup.nix
@@ -23,7 +23,7 @@
         }
       ];
       specialArgs.inputs = inputs;
-      system = "aarch64-linux";
+      system = system;
     };
     mkVM = system: (nixpkgs.lib.nixosSystem { 
       modules = [ 
@@ -48,19 +48,19 @@
         vm-aarch64 = mkVM "aarch64-linux";
         edid = nixpkgs.legacyPackages.x86_64-linux.callPackage ./edid {};
       };
-#      arm7l-linux = {
-#        vm-arm7l = mkVM "armv7l-linux";
-#        nixos = eval.config.system.build.toplevel;
-#        sdImage = eval.config.system.build.sdImage;
-#        edid = nixpkgs.legacyPackages.arm7l-linux.callPackage ./edid {};
- #       inherit eval;
- #     };
+      arm7l-linux = {
+        vm-arm7l = mkVM "armv7l-linux";
+        nixos = eval.config.system.build.toplevel;
+        sdImage = eval.config.system.build.sdImage;
+        edid = nixpkgs.legacyPackages.arm7l-linux.callPackage ./edid {};
+        inherit (eval "armv7l-linux");
+      };
       aarch64-linux = {
-        vm-aarch64 = mkVM "aarch64-linux";
+        vm-x64 = mkVM "x86_64-linux";
         nixos = eval.config.system.build.toplevel;
         sdImage = eval.config.system.build.sdImage;
         edid = nixpkgs.legacyPackages.aarch64-linux.callPackage ./edid {};
-        inherit eval;
+        inherit (eval "aarch64-linux");
       };
     };
   };
