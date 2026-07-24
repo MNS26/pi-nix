@@ -42,8 +42,9 @@ in {
     memorySize = 1024*8;
     qemu = {
       options = [
+        "--nodefaults"
         "-serial mon:stdio"
-      ] ++ lib.optional (!pkgs.stdenv.hostPlatform.isAarch64) "-vga virtio" # not that this should be built on arm though . . .
+      ] ++ lib.optional (pkgs.stdenv.hostPlatform.isx86_64) "-vga virtio" # not that this should be built on arm though . . .
       ;
       #ovmf = {
         #enable = true;
@@ -51,7 +52,7 @@ in {
       #};
       package = (import pkgs.path { system = "x86_64-linux"; }).qemu;
     };
-    useEFIBoot = ! pkgs.stdenv.hostPlatform.isAarch64;
+    useEFIBoot = pkgs.stdenv.hostPlatform.isx86_64;
     resolution = {
       x = 800;
       y = 480;
