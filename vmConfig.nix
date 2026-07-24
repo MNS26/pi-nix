@@ -28,6 +28,7 @@ in {
     ];
     plymouth.enable = lib.mkVMOverride false;
   };
+  environment.variables = {QT_IM_MODULE = lib.mkVMOverride "";};
   environment.sessionVariables = lib.mkVMOverride {WLR_RENDERER_ALLOW_SOFTWARE = "1";};
   hardware.firmware = [ edid-bin ];
   nixpkgs.overlays = [ (import ./overlay.nix) ];

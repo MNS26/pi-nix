@@ -99,6 +99,7 @@
     };
     edgetx = {
       isNormalUser = true;
+      createHome = true;
       extraGroups = [ "wheel" "networkmanager" "bluetooth" ];
       initialPassword = "pi";
       openssh.authorizedKeys.keys = [
