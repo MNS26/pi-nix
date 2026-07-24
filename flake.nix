@@ -45,16 +45,17 @@
     packages = {
       x86_64-linux = {
         vm-x64 = mkVM "x86_64-linux";
+        vm-i686 = mkVM "i686-linux";
         vm-aarch64 = mkVM "aarch64-linux";
+        vm-armv7l = mkVM "armv7l-linux";
         edid = nixpkgs.legacyPackages.x86_64-linux.callPackage ./edid {};
       };
       i686-linux = {
         vm-i686 = mkVM "i686-linux";
-        vm-aarch64 = mkVM "aarch64-linux";
+        vm-armv7l = mkVM "armv7l-linux";
         edid = nixpkgs.legacyPackages.i686-linux.callPackage ./edid {};
       };
       arm7l-linux = {
-        vm-x64 = mkVM "x86_64-linux";
         vm-i686 = mkVM "i686-linux";
         nixos = eval.config.system.build.toplevel;
         sdImage = eval.config.system.build.sdImage ;
@@ -63,6 +64,8 @@
       };
       aarch64-linux = {
         vm-x64 = mkVM "x86_64-linux";
+        vm-i686 = mkVM "i686-linux";
+        vm-armv7l = mkVM "armv7l-linux";
         nixos = eval.config.system.build.toplevel;
         sdImage = eval.config.system.build.sdImage;
         edid = nixpkgs.legacyPackages.aarch64-linux.callPackage ./edid {};
