@@ -4,7 +4,9 @@
   imports = [ 
     ./hardware-configuration.nix
     ./udev-rules.nix
-    ./kde.nix
+#    ./kde.nix
+    ./xfce.nix
+    ./lxqt.nix
     ./edgetx.nix
 #    ./visual-code-server.nix
 #    ./wayfire.nix
